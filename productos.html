@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LUiv — Productos</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+    <!-- ========================================
+         BARRA SUPERIOR
+    ========================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <div class="logo">
+                LU<span>iv</span>
+            </div>
+
+        </div>
+
+
+        <div class="topbar-actions">
+
+            <button
+                type="button"
+                class="topbar-button"
+                onclick="window.location.href='dashboard.html'"
+            >
+                Mi negocio
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         CONTENIDO PRINCIPAL
+    ========================================= -->
+
+    <main class="content">
+
+
+        <!-- ========================================
+             ENCABEZADO
+        ========================================= -->
+
+        <section class="welcome">
+
+            <span class="eyebrow">
+                PRODUCTOS
+            </span>
+
+            <h1>
+                Catálogo de productos
+            </h1>
+
+            <p>
+                Registrá, buscá y administrá
+                los productos de tu negocio.
+            </p>
+
+        </section>
+
+
+        <!-- ========================================
+             PANEL PRINCIPAL
+        ========================================= -->
+
+        <section class="products-panel">
+
+
+            <!-- ENCABEZADO -->
+
+            <div class="products-panel-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        GESTIÓN
+                    </span>
+
+                    <h2>
+                        Tus productos
+                    </h2>
+
+                    <p>
+                        Mantené organizado el catálogo
+                        de tu negocio.
+                    </p>
+
+                </div>
+
+
+                <div class="products-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="volverDashboard"
+                    >
+                        Volver al panel
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="registrarProducto"
+                    >
+                        Registrar producto
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="escanearCodigo"
+                    >
+                        Escanear código
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================
+                 BUSCADOR
+            ========================================= -->
+
+            <div class="products-search">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscarProductoCatalogo"
+                        placeholder="Buscar producto o código..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================
+                 BÚSQUEDA POR CÓDIGO
+            ========================================= -->
+
+            <div class="barcode-search-panel">
+
+                <div class="barcode-search-info">
+
+                    <span class="eyebrow">
+                        CÓDIGO DE BARRAS
+                    </span>
+
+                    <h3>
+                        Buscar producto por código
+                    </h3>
+
+                    <p>
+                        Escribí el código manualmente
+                        o utilizá un lector USB.
+                    </p>
+
+                </div>
+
+
+                <div class="barcode-search-form">
+
+                    <input
+                        type="text"
+                        id="codigoBarras"
+                        placeholder="Ej. 7791234567890"
+                        autocomplete="off"
+                        inputmode="numeric"
+                    >
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="buscarCodigo"
+                    >
+                        Buscar código
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="resultadoCodigo"
+                    class="barcode-result"
+                ></div>
+
+            </div>
+
+
+            <!-- ========================================
+                 RESUMEN
+            ========================================= -->
+
+            <div class="products-info">
+
+                <span id="cantidadProductos">
+                    0 productos registrados
+                </span>
+
+            </div>
+
+
+            <!-- ========================================
+                 CATÁLOGO
+            ========================================= -->
+
+            <div
+                id="catalogoProductos"
+                class="catalog-products-grid"
+            >
+
+                <div class="catalog-empty">
+
+                    <h3>
+                        Todavía no tenés productos
+                    </h3>
+
+                    <p>
+                        Registrá tu primer producto
+                        para comenzar a armar tu catálogo.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="registrarProductoVacio"
+                    >
+                        Registrar primer producto
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- ========================================
+     MODAL DEL LECTOR
+========================================= -->
+
+<div
+    id="scannerModal"
+    class="scanner-modal"
+>
+
+    <div class="scanner-box">
+
+
+        <div class="scanner-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    LECTOR
+                </span>
+
+                <h2>
+                    Escanear producto
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="cerrarScanner"
+                class="scanner-close"
+                aria-label="Cerrar lector"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="scanner-video-container">
+
+            <video
+                id="scannerVideo"
+                autoplay
+                muted
+                playsinline
+            ></video>
+
+
+            <div class="scanner-frame">
+
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+        </div>
+
+
+        <div class="scanner-status">
+
+            <span id="scannerStatus">
+                Apuntá la cámara al código de barras.
+            </span>
+
+        </div>
+
+
+        <div
+            id="codigoDetectado"
+            class="codigo-detectado"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================
+     MODAL REGISTRAR PRODUCTO
+========================================= -->
+
+<div
+    id="productoModal"
+    class="product-modal"
+>
+
+    <div class="product-modal-box">
+
+
+        <div class="product-modal-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    NUEVO PRODUCTO
+                </span>
+
+                <h2>
+                    Registrar producto
+                </h2>
+
+                <p>
+                    Agregá la información básica
+                    del producto.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="cerrarProductoModal"
+                class="scanner-close"
+                aria-label="Cerrar registro de producto"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="new-product-form">
+
+
+            <label for="nuevoProductoCodigoInput">
+                Código de barras
+            </label>
+
+            <input
+                type="text"
+                id="nuevoProductoCodigoInput"
+                placeholder="Opcional — Ej. 7791234567890"
+                autocomplete="off"
+                inputmode="numeric"
+            >
+
+            <small>
+                Podés registrarlo sin código de barras.
+            </small>
+
+
+            <label for="nuevoProductoNombre">
+                Nombre del producto
+            </label>
+
+            <input
+                type="text"
+                id="nuevoProductoNombre"
+                placeholder="Ej. Coca Cola 1.5L"
+                autocomplete="off"
+            >
+
+
+            <div class="new-product-metrics">
+                <div>
+                    <label for="nuevoProductoPrecio">Precio de venta <span class="product-field-badge">MONTO</span></label>
+                    <input type="text" id="nuevoProductoPrecio" placeholder="Ej. 2500" inputmode="numeric" data-mascara-monto>
+                </div>
+                <div>
+                    <label for="nuevoProductoStock">Stock inicial <span class="product-field-badge">INVENTARIO</span></label>
+                    <input type="number" id="nuevoProductoStock" placeholder="Ej. 20" min="0" step="1">
+                </div>
+            </div>
+
+
+            <button
+                type="button"
+                class="primary-button"
+                id="guardarNuevoProducto"
+            >
+                Registrar producto
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================
+     MODAL AGREGAR STOCK
+========================================= -->
+
+<div
+    id="stockModal"
+    class="product-modal"
+>
+
+    <div class="product-modal-box">
+
+
+        <div class="product-modal-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    INVENTARIO
+                </span>
+
+                <h2>
+                    Agregar stock
+                </h2>
+
+                <p>
+                    Sumá unidades al stock actual
+                    de este producto.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="cerrarStockModal"
+                class="scanner-close"
+                aria-label="Cerrar agregar stock"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="stock-product-info">
+
+            <span>
+                Producto
+            </span>
+
+            <strong id="stockProductoNombre">
+                —
+            </strong>
+
+            <small>
+                Stock actual:
+                <strong id="stockProductoActual">
+                    0
+                </strong>
+            </small>
+
+        </div>
+
+
+        <div class="new-product-form">
+
+            <label for="cantidadStock">
+                Unidades a agregar
+            </label>
+
+            <input
+                type="number"
+                id="cantidadStock"
+                placeholder="Ej. 10"
+                min="1"
+                step="1"
+            >
+
+
+            <button
+                type="button"
+                class="primary-button"
+                id="guardarStock"
+            >
+                Agregar stock
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================
+     MODAL ACTUALIZAR PRECIO
+========================================= -->
+
+<div
+    id="precioModal"
+    class="product-modal"
+>
+
+    <div class="product-modal-box">
+
+
+        <div class="product-modal-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    PRECIO
+                </span>
+
+                <h2>
+                    Actualizar precio
+                </h2>
+
+                <p>
+                    Cambiá el precio de venta
+                    sin eliminar el producto.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="cerrarPrecioModal"
+                class="scanner-close"
+                aria-label="Cerrar actualizar precio"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="stock-product-info">
+
+            <span>
+                Producto
+            </span>
+
+            <strong id="precioProductoNombre">
+                —
+            </strong>
+
+            <small>
+                Precio actual:
+                <strong id="precioProductoActual">
+                    $0
+                </strong>
+            </small>
+
+        </div>
+
+
+        <div class="new-product-form">
+
+            <label for="nuevoPrecio">
+                Nuevo precio de venta
+            </label>
+
+            <input
+                type="text"
+                id="nuevoPrecio"
+                placeholder="Ej. 3000"
+                inputmode="numeric"
+                data-mascara-monto
+            >
+
+
+            <button
+                type="button"
+                class="primary-button"
+                id="guardarPrecio"
+            >
+                Actualizar precio
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================
+     LECTOR DE CÓDIGOS
+========================================= -->
+
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"></script>
+
+
+<script>
+
+
+// ==================================================
+// ELEMENTOS
+// ==================================================
+
+const scannerModal =
+    document.getElementById("scannerModal");
+
+function numeroDesdeMiles(valor) {
+    return Number(String(valor ?? "").replace(/\./g, "").replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
+}
+
+function activarMascarasPrecio() {
+    document.querySelectorAll("[data-mascara-monto]").forEach(campo => {
+        const formatear = () => { const digitos = campo.value.replace(/\D/g, ""); campo.value = digitos ? Number(digitos).toLocaleString("es-AR") : ""; };
+        campo.addEventListener("input", formatear);
+        formatear();
+    });
+}
+
+const scannerVideo =
+    document.getElementById("scannerVideo");
+
+const scannerStatus =
+    document.getElementById("scannerStatus");
+
+const codigoDetectado =
+    document.getElementById("codigoDetectado");
+
+const botonEscanear =
+    document.getElementById("escanearCodigo");
+
+const botonCerrar =
+    document.getElementById("cerrarScanner");
+
+const botonVolver =
+    document.getElementById("volverDashboard");
+
+const botonRegistrarProducto =
+    document.getElementById("registrarProducto");
+
+const botonRegistrarProductoVacio =
+    document.getElementById("registrarProductoVacio");
+
+const campoCodigo =
+    document.getElementById("codigoBarras");
+
+const botonBuscarCodigo =
+    document.getElementById("buscarCodigo");
+
+const resultadoCodigo =
+    document.getElementById("resultadoCodigo");
+
+const buscadorCatalogo =
+    document.getElementById("buscarProductoCatalogo");
+
+const catalogoProductos =
+    document.getElementById("catalogoProductos");
+
+const cantidadProductos =
+    document.getElementById("cantidadProductos");
+
+
+// ==================================================
+// MODAL PRODUCTO
+// ==================================================
+
+const productoModal =
+    document.getElementById("productoModal");
+
+const cerrarProductoModal =
+    document.getElementById("cerrarProductoModal");
+
+const nuevoProductoCodigoInput =
+    document.getElementById(
+        "nuevoProductoCodigoInput"
+    );
+
+const nuevoProductoNombre =
+    document.getElementById(
+        "nuevoProductoNombre"
+    );
+
+const nuevoProductoPrecio =
+    document.getElementById(
+        "nuevoProductoPrecio"
+    );
+
+const nuevoProductoStock =
+    document.getElementById(
+        "nuevoProductoStock"
+    );
+
+const guardarNuevoProducto =
+    document.getElementById(
+        "guardarNuevoProducto"
+    );
+
+
+// ==================================================
+// MODAL STOCK
+// ==================================================
+
+const stockModal =
+    document.getElementById("stockModal");
+
+const cerrarStockModal =
+    document.getElementById(
+        "cerrarStockModal"
+    );
+
+const stockProductoNombre =
+    document.getElementById(
+        "stockProductoNombre"
+    );
+
+const stockProductoActual =
+    document.getElementById(
+        "stockProductoActual"
+    );
+
+const cantidadStock =
+    document.getElementById(
+        "cantidadStock"
+    );
+
+const guardarStock =
+    document.getElementById(
+        "guardarStock"
+    );
+
+
+// ==================================================
+// MODAL PRECIO
+// ==================================================
+
+const precioModal =
+    document.getElementById("precioModal");
+
+const cerrarPrecioModal =
+    document.getElementById(
+        "cerrarPrecioModal"
+    );
+
+const precioProductoNombre =
+    document.getElementById(
+        "precioProductoNombre"
+    );
+
+const precioProductoActual =
+    document.getElementById(
+        "precioProductoActual"
+    );
+
+const nuevoPrecio =
+    document.getElementById(
+        "nuevoPrecio"
+    );
+
+const guardarPrecio =
+    document.getElementById(
+        "guardarPrecio"
+    );
+
+
+// ==================================================
+// DATOS
+// ==================================================
+
+let productosGuardados =
+    JSON.parse(
+        localStorage.getItem(
+            "productosLUiv"
+        )
+    ) || [];
+
+
+// ==================================================
+// PRODUCTO SELECCIONADO
+// ==================================================
+
+let productoStockSeleccionado = null;
+
+let productoPrecioSeleccionado = null;
+
+
+// ==================================================
+// LECTOR
+// ==================================================
+
+let lectorCodigo = null;
+
+let controlCamara = null;
+
+
+// ==================================================
+// NORMALIZAR CÓDIGO
+// ==================================================
+
+function normalizarCodigo(codigo) {
+
+    return String(codigo || "")
+        .trim()
+        .replace(/\s+/g, "");
+
+}
+
+
+// ==================================================
+// FORMATO DINERO
+// ==================================================
+
+function formatoDinero(valor) {
+
+    return "$" +
+        Number(valor || 0)
+            .toLocaleString(
+                "es-AR"
+            );
+
+}
+
+
+// ==================================================
+// GUARDAR PRODUCTOS
+// ==================================================
+
+function guardarProductos() {
+
+    localStorage.setItem(
+        "productosLUiv",
+        JSON.stringify(
+            productosGuardados
+        )
+    );
+
+}
+
+
+// ==================================================
+// BUSCAR PRODUCTO POR ID
+// ==================================================
+
+function buscarProductoPorId(id) {
+
+    return productosGuardados.find(
+        producto =>
+            String(producto.id) === String(id)
+    ) || null;
+
+}
+
+
+// ==================================================
+// BUSCAR PRODUCTO POR CÓDIGO
+// ==================================================
+
+function buscarProductoPorCodigo(codigo) {
+
+    const codigoNormalizado =
+        normalizarCodigo(codigo);
+
+    if (codigoNormalizado === "") {
+        return null;
+    }
+
+    return productosGuardados.find(
+        producto =>
+            normalizarCodigo(
+                producto.codigoBarras
+            ) === codigoNormalizado
+    ) || null;
+
+}
+
+
+// ==================================================
+// ABRIR MODAL PRODUCTO
+// ==================================================
+
+function abrirModalProducto(codigo = "") {
+
+    const codigoNormalizado =
+        normalizarCodigo(codigo);
+
+
+    nuevoProductoCodigoInput.value =
+        codigoNormalizado;
+
+
+    nuevoProductoNombre.value = "";
+
+    nuevoProductoPrecio.value = "";
+
+    nuevoProductoStock.value = "";
+
+
+    productoModal.classList.add(
+        "active"
+    );
+
+
+    setTimeout(() => {
+
+        nuevoProductoNombre.focus();
+
+    }, 100);
+
+}
+
+
+// ==================================================
+// CERRAR MODAL PRODUCTO
+// ==================================================
+
+function cerrarModalProducto() {
+
+    productoModal.classList.remove(
+        "active"
+    );
+
+    nuevoProductoCodigoInput.value = "";
+
+    nuevoProductoNombre.value = "";
+
+    nuevoProductoPrecio.value = "";
+
+    nuevoProductoStock.value = "";
+
+}
+
+
+// ==================================================
+// GUARDAR NUEVO PRODUCTO
+// ==================================================
+
+function guardarProducto() {
+
+    const codigo =
+        normalizarCodigo(
+            nuevoProductoCodigoInput.value
+        );
+
+
+    const nombre =
+        nuevoProductoNombre.value.trim();
+
+
+    const precio =
+        numeroDesdeMiles(
+            nuevoProductoPrecio.value
+        );
+
+
+    const stock =
+        Number(
+            nuevoProductoStock.value || 0
+        );
+
+
+    if (
+        nombre === "" ||
+        precio <= 0
+    ) {
+
+        alert(
+            "Completá el nombre y el precio del producto."
+        );
+
+        return;
+
+    }
+
+
+    if (stock < 0) {
+
+        alert(
+            "El stock no puede ser negativo."
+        );
+
+        return;
+
+    }
+
+
+    // ==============================================
+    // VERIFICAR CÓDIGO DUPLICADO
+    // ==============================================
+
+    if (codigo !== "") {
+
+        const productoExistente =
+            buscarProductoPorCodigo(
+                codigo
+            );
+
+
+        if (productoExistente) {
+
+            alert(
+                "Ese código ya está registrado."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    // ==============================================
+    // CREAR PRODUCTO
+    // ==============================================
+
+    const nuevoProducto = {
+
+        id:
+            Date.now(),
+
+        codigoBarras:
+            codigo,
+
+        nombre:
+            nombre,
+
+        precio:
+            precio,
+
+        precioVenta:
+            precio,
+
+        ultimoPrecio:
+            precio,
+
+        unidadesVendidas:
+            0,
+
+        facturacion:
+            0,
+
+        costo:
+            0,
+
+        stock:
+            stock,
+
+        stockMinimo:
+            0,
+
+        fechaRegistro:
+            new Date()
+                .toLocaleDateString(
+                    "es-AR"
+                )
+
+    };
+
+
+    productosGuardados.push(
+        nuevoProducto
+    );
+
+
+    guardarProductos();
+
+
+    cerrarModalProducto();
+
+
+    mostrarCatalogo();
+
+
+    if (
+        codigo !== "" &&
+        campoCodigo
+    ) {
+
+        campoCodigo.value =
+            codigo;
+
+        mostrarResultadoCodigo(
+            nuevoProducto
+        );
+
+    }
+
+}
+
+
+// ==================================================
+// ABRIR MODAL STOCK
+// ==================================================
+
+function abrirModalStock(id) {
+
+    const producto =
+        buscarProductoPorId(id);
+
+
+    if (!producto) {
+        return;
+    }
+
+
+    productoStockSeleccionado =
+        producto;
+
+
+    stockProductoNombre.textContent =
+        producto.nombre;
+
+
+    stockProductoActual.textContent =
+        Number(
+            producto.stock || 0
+        );
+
+
+    cantidadStock.value = "";
+
+
+    stockModal.classList.add(
+        "active"
+    );
+
+
+    setTimeout(() => {
+
+        cantidadStock.focus();
+
+    }, 100);
+
+}
+
+
+// ==================================================
+// CERRAR MODAL STOCK
+// ==================================================
+
+function cerrarModalStock() {
+
+    stockModal.classList.remove(
+        "active"
+    );
+
+    productoStockSeleccionado =
+        null;
+
+    cantidadStock.value = "";
+
+}
+
+
+// ==================================================
+// GUARDAR STOCK
+// ==================================================
+
+function agregarStock() {
+
+    if (
+        !productoStockSeleccionado
+    ) {
+        return;
+    }
+
+
+    const cantidad =
+        Number(
+            cantidadStock.value
+        );
+
+
+    if (
+        !Number.isInteger(cantidad) ||
+        cantidad <= 0
+    ) {
+
+        alert(
+            "Ingresá una cantidad de stock válida."
+        );
+
+        return;
+
+    }
+
+
+    productoStockSeleccionado.stock =
+        Number(
+            productoStockSeleccionado.stock || 0
+        ) + cantidad;
+
+
+    guardarProductos();
+
+
+    cerrarModalStock();
+
+
+    mostrarCatalogo();
+
+
+    if (
+        campoCodigo &&
+        campoCodigo.value
+    ) {
+
+        const producto =
+            buscarProductoPorCodigo(
+                campoCodigo.value
+            );
+
+        if (producto) {
+
+            mostrarResultadoCodigo(
+                producto
+            );
+
+        }
+
+    }
+
+}
+
+
+// ==================================================
+// ABRIR MODAL PRECIO
+// ==================================================
+
+function abrirModalPrecio(id) {
+
+    const producto =
+        buscarProductoPorId(id);
+
+
+    if (!producto) {
+        return;
+    }
+
+
+    productoPrecioSeleccionado =
+        producto;
+
+
+    precioProductoNombre.textContent =
+        producto.nombre;
+
+
+    precioProductoActual.textContent =
+        formatoDinero(
+            producto.precio
+        );
+
+
+    nuevoPrecio.value =
+        Number(producto.precio || 0)
+            .toLocaleString("es-AR");
+
+
+    precioModal.classList.add(
+        "active"
+    );
+
+
+    setTimeout(() => {
+
+        nuevoPrecio.focus();
+
+        nuevoPrecio.select();
+
+    }, 100);
+
+}
+
+
+// ==================================================
+// CERRAR MODAL PRECIO
+// ==================================================
+
+function cerrarModalPrecio() {
+
+    precioModal.classList.remove(
+        "active"
+    );
+
+    productoPrecioSeleccionado =
+        null;
+
+    nuevoPrecio.value = "";
+
+}
+
+
+// ==================================================
+// ACTUALIZAR PRECIO
+// ==================================================
+
+function actualizarPrecio() {
+
+    if (
+        !productoPrecioSeleccionado
+    ) {
+        return;
+    }
+
+
+    const precioAnterior =
+        Number(
+            productoPrecioSeleccionado.precio || 0
+        );
+
+
+    const precioNuevo =
+        numeroDesdeMiles(
+            nuevoPrecio.value
+        );
+
+
+    if (
+        !Number.isFinite(precioNuevo) ||
+        precioNuevo <= 0
+    ) {
+
+        alert(
+            "Ingresá un precio válido."
+        );
+
+        return;
+
+    }
+
+
+    productoPrecioSeleccionado.ultimoPrecio =
+        precioAnterior;
+
+
+    productoPrecioSeleccionado.precio =
+        precioNuevo;
+
+
+    productoPrecioSeleccionado.precioVenta =
+        precioNuevo;
+
+
+    guardarProductos();
+
+
+    cerrarModalPrecio();
+
+
+    mostrarCatalogo();
+
+
+    if (
+        campoCodigo &&
+        campoCodigo.value
+    ) {
+
+        const producto =
+            buscarProductoPorCodigo(
+                campoCodigo.value
+            );
+
+        if (producto) {
+
+            mostrarResultadoCodigo(
+                producto
+            );
+
+        }
+
+    }
+
+}
+
+
+// ==================================================
+// DAR DE BAJA PRODUCTO
+// ==================================================
+
+function eliminarProducto(id) {
+
+    /*
+     * Buscamos el producto directamente
+     * por su ID.
+     *
+     * Esto hace que funcione correctamente
+     * aunque el catálogo esté filtrado
+     * por el buscador.
+     */
+
+    const producto =
+        buscarProductoPorId(id);
+
+
+    if (!producto) {
+
+        console.warn(
+            "No se encontró el producto con ID:",
+            id
+        );
+
+        return;
+
+    }
+
+
+    const nombreProducto =
+        String(
+            producto.nombre || "este producto"
+        );
+
+
+    const confirmar =
+        confirm(
+            `¿Querés dar de baja "${nombreProducto}"?\n\nEl producto será eliminado del catálogo de LUiv.`
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    /*
+     * Eliminamos únicamente el producto
+     * cuyo ID coincide.
+     */
+
+    productosGuardados =
+        productosGuardados.filter(
+            item =>
+                String(item.id) !== String(id)
+        );
+
+
+    /*
+     * Guardamos inmediatamente
+     * los cambios en localStorage.
+     */
+
+    guardarProductos();
+
+
+    /*
+     * Cerramos cualquier modal que pudiera
+     * estar trabajando con ese producto.
+     */
+
+    if (
+        productoStockSeleccionado &&
+        String(productoStockSeleccionado.id) ===
+            String(id)
+    ) {
+
+        cerrarModalStock();
+
+    }
+
+
+    if (
+        productoPrecioSeleccionado &&
+        String(productoPrecioSeleccionado.id) ===
+            String(id)
+    ) {
+
+        cerrarModalPrecio();
+
+    }
+
+
+    /*
+     * Actualizamos el catálogo.
+     */
+
+    mostrarCatalogo();
+
+
+    /*
+     * Si el código de barras que estaba
+     * buscado correspondía al producto
+     * eliminado, limpiamos el resultado.
+     */
+
+    if (
+        campoCodigo &&
+        normalizarCodigo(
+            campoCodigo.value
+        ) ===
+        normalizarCodigo(
+            producto.codigoBarras
+        )
+    ) {
+
+        if (resultadoCodigo) {
+
+            resultadoCodigo.innerHTML = "";
+
+        }
+
+    }
+
+
+    /*
+     * Aviso final.
+     */
+
+    console.log(
+        `Producto dado de baja: ${nombreProducto}`
+    );
+
+}
+
+
+// ==================================================
+// MOSTRAR RESULTADO CÓDIGO
+// ==================================================
+
+function mostrarResultadoCodigo(producto) {
+
+    if (!resultadoCodigo) {
+        return;
+    }
+
+
+    if (!producto) {
+
+        const codigo =
+            normalizarCodigo(
+                campoCodigo
+                    ? campoCodigo.value
+                    : ""
+            );
+
+
+        resultadoCodigo.innerHTML = `
+
+            <div class="barcode-not-found">
+
+                <strong>
+                    Producto no registrado
+                </strong>
+
+                <p>
+                    El código
+                    <strong>
+                        ${codigo || "ingresado"}
+                    </strong>
+                    no está asociado a ningún producto.
+                </p>
+
+                <button
+                    type="button"
+                    class="primary-button"
+                    id="registrarDesdeCodigo"
+                >
+                    Registrar este producto
+                </button>
+
+            </div>
+
+        `;
+
+
+        const botonRegistrar =
+            document.getElementById(
+                "registrarDesdeCodigo"
+            );
+
+
+        if (botonRegistrar) {
+
+            botonRegistrar.addEventListener(
+                "click",
+                () => {
+
+                    abrirModalProducto(
+                        codigo
+                    );
+
+                }
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    resultadoCodigo.innerHTML = `
+
+        <div class="barcode-found">
+
+            <div>
+
+                <span class="eyebrow">
+                    PRODUCTO ENCONTRADO
+                </span>
+
+                <h3>
+                    ${producto.nombre}
+                </h3>
+
+                ${
+                    producto.codigoBarras
+                        ? `
+                            <p>
+                                Código:
+                                <strong>
+                                    ${producto.codigoBarras}
+                                </strong>
+                            </p>
+                        `
+                        : ""
+                }
+
+            </div>
+
+
+            <div class="barcode-found-price">
+
+                <span>
+                    Precio registrado
+                </span>
+
+                <strong>
+                    ${formatoDinero(
+                        producto.precio
+                    )}
+                </strong>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+// ==================================================
+// MOSTRAR CATÁLOGO
+// ==================================================
+
+function mostrarCatalogo() {
+
+    if (!catalogoProductos) {
+        return;
+    }
+
+
+    const busqueda =
+        buscadorCatalogo
+            ? buscadorCatalogo.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    let productos =
+        [...productosGuardados];
+
+
+    // ==============================================
+    // FILTRAR
+    // ==============================================
+
+    if (busqueda !== "") {
+
+        productos =
+            productos.filter(
+                producto => {
+
+                    const nombre =
+                        String(
+                            producto.nombre || ""
+                        ).toLowerCase();
+
+
+                    const codigo =
+                        String(
+                            producto.codigoBarras || ""
+                        ).toLowerCase();
+
+
+                    return (
+                        nombre.includes(
+                            busqueda
+                        ) ||
+                        codigo.includes(
+                            busqueda
+                        )
+                    );
+
+                }
+            );
+
+    }
+
+
+    // ==============================================
+    // CONTADOR
+    // ==============================================
+
+    cantidadProductos.textContent =
+        productosGuardados.length === 1
+            ? "1 producto registrado"
+            : `${productosGuardados.length} productos registrados`;
+
+
+    // ==============================================
+    // SIN PRODUCTOS
+    // ==============================================
+
+    if (productos.length === 0) {
+
+        catalogoProductos.innerHTML = `
+
+            <div class="catalog-empty">
+
+                <h3>
+                    ${
+                        productosGuardados.length === 0
+                            ? "Todavía no tenés productos"
+                            : "No encontramos productos"
+                    }
+                </h3>
+
+                <p>
+                    ${
+                        productosGuardados.length === 0
+                            ? "Registrá tu primer producto para comenzar."
+                            : "Probá con otro nombre o código."
+                    }
+                </p>
+
+                ${
+                    productosGuardados.length === 0
+                        ? `
+                            <button
+                                type="button"
+                                class="primary-button"
+                                onclick="abrirModalProducto()"
+                            >
+                                Registrar primer producto
+                            </button>
+                        `
+                        : ""
+                }
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    // ==============================================
+    // RENDERIZAR PRODUCTOS
+    // ==============================================
+
+    catalogoProductos.innerHTML = "";
+
+
+    productos.forEach(
+        producto => {
+
+            const stock =
+                Number(
+                    producto.stock || 0
+                );
+
+
+            const precio =
+                Number(
+                    producto.precio || 0
+                );
+
+
+            catalogoProductos.innerHTML += `
+
+                <article
+                    class="catalog-product-card"
+                    data-product-id="${producto.id}"
+                >
+
+
+                    <!-- ==================================
+                         PARTE SUPERIOR
+                    =================================== -->
+
+                    <div class="catalog-product-top">
+
+                        <span class="catalog-product-label">
+                            PRODUCTO
+                        </span>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         NOMBRE
+                    =================================== -->
+
+                    <h3>
+                        ${producto.nombre}
+                    </h3>
+
+
+                    <!-- ==================================
+                         CÓDIGO
+                    =================================== -->
+
+                    <div class="catalog-product-code">
+
+                        <span>
+                            Código de barras
+                        </span>
+
+                        <strong>
+                            ${
+                                producto.codigoBarras
+                                    ? producto.codigoBarras
+                                    : "Sin código"
+                            }
+                        </strong>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         PRECIO
+                    =================================== -->
+
+                    <div class="catalog-product-bottom">
+
+                        <div>
+
+                            <span>
+                                Precio de venta
+                            </span>
+
+                            <strong>
+                                ${formatoDinero(
+                                    precio
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="product-action-button"
+                            onclick="abrirModalPrecio(${producto.id})"
+                        >
+                            Actualizar precio
+                        </button>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         STOCK
+                    =================================== -->
+
+                    <div class="catalog-product-stock">
+
+                        <div>
+
+                            <span>
+                                Stock disponible
+                            </span>
+
+                            <strong>
+                                ${stock}
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="product-action-button"
+                            onclick="abrirModalStock(${producto.id})"
+                        >
+                            + Agregar stock
+                        </button>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         DAR DE BAJA
+                    =================================== -->
+
+                    <div class="catalog-product-delete">
+
+                        <button
+                            type="button"
+                            class="product-delete-button"
+                            onclick="eliminarProducto(${producto.id})"
+                            title="Dar de baja este producto"
+                        >
+
+                            <span class="delete-icon">
+                                ×
+                            </span>
+
+                            <span>
+                                Dar de baja
+                            </span>
+
+                        </button>
+
+                    </div>
+
+
+                </article>
+
+            `;
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// PROCESAR CÓDIGO
+// ==================================================
+
+function procesarCodigo(codigo) {
+
+    const codigoNormalizado =
+        normalizarCodigo(codigo);
+
+
+    if (
+        codigoNormalizado === ""
+    ) {
+
+        alert(
+            "Ingresá un código de barras."
+        );
+
+        return;
+
+    }
+
+
+    campoCodigo.value =
+        codigoNormalizado;
+
+
+    const producto =
+        buscarProductoPorCodigo(
+            codigoNormalizado
+        );
+
+
+    mostrarResultadoCodigo(
+        producto
+    );
+
+}
+
+
+// ==================================================
+// BUSCAR CÓDIGO
+// ==================================================
+
+if (botonBuscarCodigo) {
+
+    botonBuscarCodigo.addEventListener(
+        "click",
+        () => {
+
+            procesarCodigo(
+                campoCodigo.value
+            );
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// ENTER CÓDIGO
+// ==================================================
+
+if (campoCodigo) {
+
+    campoCodigo.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                procesarCodigo(
+                    campoCodigo.value
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// BUSCADOR
+// ==================================================
+
+if (buscadorCatalogo) {
+
+    buscadorCatalogo.addEventListener(
+        "input",
+        mostrarCatalogo
+    );
+
+}
+
+
+// ==================================================
+// BOTÓN REGISTRAR
+// ==================================================
+
+if (botonRegistrarProducto) {
+
+    botonRegistrarProducto.addEventListener(
+        "click",
+        () => {
+
+            abrirModalProducto();
+
+        }
+    );
+
+}
+
+
+if (botonRegistrarProductoVacio) {
+
+    botonRegistrarProductoVacio.addEventListener(
+        "click",
+        () => {
+
+            abrirModalProducto();
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// CERRAR MODAL PRODUCTO
+// ==================================================
+
+if (cerrarProductoModal) {
+
+    cerrarProductoModal.addEventListener(
+        "click",
+        cerrarModalProducto
+    );
+
+}
+
+
+if (productoModal) {
+
+    productoModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === productoModal
+            ) {
+
+                cerrarModalProducto();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// CERRAR MODAL STOCK
+// ==================================================
+
+if (cerrarStockModal) {
+
+    cerrarStockModal.addEventListener(
+        "click",
+        cerrarModalStock
+    );
+
+}
+
+
+if (stockModal) {
+
+    stockModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === stockModal
+            ) {
+
+                cerrarModalStock();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// CERRAR MODAL PRECIO
+// ==================================================
+
+if (cerrarPrecioModal) {
+
+    cerrarPrecioModal.addEventListener(
+        "click",
+        cerrarModalPrecio
+    );
+
+}
+
+
+if (precioModal) {
+
+    precioModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === precioModal
+            ) {
+
+                cerrarModalPrecio();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// GUARDAR PRODUCTO
+// ==================================================
+
+if (guardarNuevoProducto) {
+
+    guardarNuevoProducto.addEventListener(
+        "click",
+        guardarProducto
+    );
+
+}
+
+
+// ==================================================
+// GUARDAR STOCK
+// ==================================================
+
+if (guardarStock) {
+
+    guardarStock.addEventListener(
+        "click",
+        agregarStock
+    );
+
+}
+
+
+// ==================================================
+// GUARDAR PRECIO
+// ==================================================
+
+if (guardarPrecio) {
+
+    guardarPrecio.addEventListener(
+        "click",
+        actualizarPrecio
+    );
+
+}
+
+
+// ==================================================
+// ENTER EN PRODUCTO
+// ==================================================
+
+if (nuevoProductoCodigoInput) {
+
+    nuevoProductoCodigoInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                nuevoProductoNombre.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+if (nuevoProductoNombre) {
+
+    nuevoProductoNombre.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                nuevoProductoPrecio.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+if (nuevoProductoPrecio) {
+
+    nuevoProductoPrecio.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                nuevoProductoStock.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+if (nuevoProductoStock) {
+
+    nuevoProductoStock.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                guardarProducto();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// ENTER STOCK
+// ==================================================
+
+if (cantidadStock) {
+
+    cantidadStock.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                agregarStock();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// ENTER PRECIO
+// ==================================================
+
+if (nuevoPrecio) {
+
+    nuevoPrecio.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                actualizarPrecio();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// ABRIR SCANNER
+// ==================================================
+
+async function abrirScanner() {
+
+    if (!scannerModal) {
+        return;
+    }
+
+
+    scannerModal.classList.add(
+        "active"
+    );
+
+
+    scannerStatus.textContent =
+        "Iniciando cámara...";
+
+
+    codigoDetectado.textContent =
+        "";
+
+
+    try {
+
+        if (
+            typeof ZXingBrowser ===
+            "undefined"
+        ) {
+
+            throw new Error(
+                "No se pudo cargar el lector."
+            );
+
+        }
+
+
+        lectorCodigo =
+            new ZXingBrowser
+                .BrowserMultiFormatReader();
+
+
+        const dispositivos =
+            await lectorCodigo
+                .listVideoInputDevices();
+
+
+        if (
+            !dispositivos ||
+            dispositivos.length === 0
+        ) {
+
+            throw new Error(
+                "No se encontró ninguna cámara."
+            );
+
+        }
+
+
+        let camaraSeleccionada =
+            dispositivos.find(
+                dispositivo =>
+                    /back|rear|environment/i.test(
+                        dispositivo.label
+                    )
+            );
+
+
+        if (
+            !camaraSeleccionada
+        ) {
+
+            camaraSeleccionada =
+                dispositivos[
+                    dispositivos.length - 1
+                ];
+
+        }
+
+
+        scannerStatus.textContent =
+            "Apuntá la cámara al código de barras.";
+
+
+        controlCamara =
+            await lectorCodigo
+                .decodeFromVideoDevice(
+                    camaraSeleccionada.deviceId,
+                    scannerVideo,
+                    (resultado, error) => {
+
+                        if (resultado) {
+
+                            const codigo =
+                                resultado.getText();
+
+
+                            codigoDetectado.innerHTML = `
+
+                                <strong>
+                                    Código detectado
+                                </strong>
+
+                                <span>
+                                    ${codigo}
+                                </span>
+
+                            `;
+
+
+                            scannerStatus.textContent =
+                                "Código detectado correctamente.";
+
+
+                            detenerScanner();
+
+
+                            setTimeout(
+                                () => {
+
+                                    cerrarScanner();
+
+
+                                    const producto =
+                                        buscarProductoPorCodigo(
+                                            codigo
+                                        );
+
+
+                                    if (
+                                        producto
+                                    ) {
+
+                                        campoCodigo.value =
+                                            normalizarCodigo(
+                                                codigo
+                                            );
+
+
+                                        mostrarResultadoCodigo(
+                                            producto
+                                        );
+
+                                    }
+
+                                    else {
+
+                                        abrirModalProducto(
+                                            codigo
+                                        );
+
+                                    }
+
+                                },
+                                500
+                            );
+
+                        }
+
+                    }
+                );
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        scannerStatus.textContent =
+            "No pudimos acceder a la cámara.";
+
+
+        codigoDetectado.innerHTML = `
+
+            <p>
+                No pudimos acceder a una cámara.
+            </p>
+
+            <p>
+                Podés ingresar el código manualmente
+                o utilizar un lector de códigos USB.
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+// ==================================================
+// DETENER SCANNER
+// ==================================================
+
+function detenerScanner() {
+
+    if (controlCamara) {
+
+        try {
+
+            controlCamara.stop();
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+        controlCamara = null;
+
+    }
+
+
+    if (lectorCodigo) {
+
+        try {
+
+            lectorCodigo.reset();
+
+        }
+
+        catch (error) {
+
+            console.log(error);
+
+        }
+
+        lectorCodigo = null;
+
+    }
+
+
+    if (
+        scannerVideo &&
+        scannerVideo.srcObject
+    ) {
+
+        scannerVideo
+            .srcObject
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+
+        scannerVideo.srcObject =
+            null;
+
+    }
+
+}
+
+
+// ==================================================
+// CERRAR SCANNER
+// ==================================================
+
+function cerrarScanner() {
+
+    detenerScanner();
+
+
+    if (scannerModal) {
+
+        scannerModal.classList.remove(
+            "active"
+        );
+
+    }
+
+}
+
+
+// ==================================================
+// BOTÓN ESCANEAR
+// ==================================================
+
+if (botonEscanear) {
+
+    botonEscanear.addEventListener(
+        "click",
+        abrirScanner
+    );
+
+}
+
+
+// ==================================================
+// CERRAR SCANNER
+// ==================================================
+
+if (botonCerrar) {
+
+    botonCerrar.addEventListener(
+        "click",
+        cerrarScanner
+    );
+
+}
+
+
+// ==================================================
+// VOLVER DASHBOARD
+// ==================================================
+
+if (botonVolver) {
+
+    botonVolver.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "dashboard.html";
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// CLICK AFUERA SCANNER
+// ==================================================
+
+if (scannerModal) {
+
+    scannerModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                scannerModal
+            ) {
+
+                cerrarScanner();
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==================================================
+// ESCAPE
+// ==================================================
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            if (
+                productoModal &&
+                productoModal.classList.contains(
+                    "active"
+                )
+            ) {
+
+                cerrarModalProducto();
+
+            }
+
+
+            if (
+                stockModal &&
+                stockModal.classList.contains(
+                    "active"
+                )
+            ) {
+
+                cerrarModalStock();
+
+            }
+
+
+            if (
+                precioModal &&
+                precioModal.classList.contains(
+                    "active"
+                )
+            ) {
+
+                cerrarModalPrecio();
+
+            }
+
+
+            if (
+                scannerModal &&
+                scannerModal.classList.contains(
+                    "active"
+                )
+            ) {
+
+                cerrarScanner();
+
+            }
+
+        }
+
+    }
+);
+
+
+// ==================================================
+// INICIAR
+// ==================================================
+
+activarMascarasPrecio();
+mostrarCatalogo();
+
+
+</script>
+
+
+</body>
+
+</html>

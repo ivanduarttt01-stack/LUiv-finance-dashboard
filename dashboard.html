@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LUiv — Mi negocio</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="dashboard">
+
+
+    <!-- ========================================
+         BARRA SUPERIOR
+    ========================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <div class="logo">
+                LU<span>iv</span>
+            </div>
+
+        </div>
+
+
+        <div class="topbar-actions">
+
+            <button
+                type="button"
+                class="topbar-button"
+                id="btnToggleCaja"
+                onclick="toggleModoCaja()"
+                style="background: #2563eb !important; border-color: #2563eb !important; color: white !important; font-weight: 600;"
+            >
+                Modo Caja
+            </button>
+
+            <button
+                type="button"
+                class="topbar-button"
+                onclick="window.location.href='productos.html'"
+            >
+                Productos
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================================
+         CONTENIDO
+    ========================================= -->
+
+    <main class="content">
+
+
+        <!-- BIENVENIDA -->
+
+        <section class="welcome">
+
+            <span class="eyebrow">
+                ESTADO DEL NEGOCIO
+            </span>
+
+            <h1>
+                Resumen de tu negocio
+            </h1>
+
+            <p>
+                Toda la información que necesitás
+                para entender cómo está funcionando.
+            </p>
+
+        </section>
+
+
+        <!-- RESUMEN PRINCIPAL -->
+
+        <section class="stats">
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Ventas</span>
+
+                    <span class="card-period">
+                        Total
+                    </span>
+                </div>
+
+                <strong id="totalVentas">
+                    $0
+                </strong>
+
+                <p>
+                    Total generado
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Gastos</span>
+
+                    <span class="card-period">
+                        Total
+                    </span>
+                </div>
+
+                <strong id="totalGastos">
+                    $0
+                </strong>
+
+                <p>
+                    Total gastado
+                </p>
+
+            </div>
+
+
+            <div class="card card-profit">
+
+                <div class="card-header">
+                    <span>Ganancia</span>
+
+                    <span class="card-period">
+                        Resultado
+                    </span>
+                </div>
+
+                <strong id="ganancia">
+                    $0
+                </strong>
+
+                <p>
+                    Ventas menos gastos
+                </p>
+
+            </div>
+
+
+        </section>
+
+        <section class="contador-section" id="contadorAutomatico">
+            <div class="section-heading contador-heading">
+                <div><span class="eyebrow">GESTIÓN FINANCIERA</span><h2>Reporte Financiero</h2><p>Tu resumen financiero listo para revisar o exportar, sin planillas manuales.</p></div>
+                <button type="button" class="primary-button" id="exportarReporteContador">Exportar a Excel / CSV</button>
+            </div>
+            <div class="contador-controls" role="group" aria-label="Período del reporte">
+                <button type="button" class="contador-filter active" data-contador-period="day">Diario</button>
+                <button type="button" class="contador-filter" data-contador-period="week">Semanal</button>
+                <button type="button" class="contador-filter" data-contador-period="month">Mensual</button>
+            </div>
+            <div id="contadorResumen" class="contador-summary"></div>
+            <div class="contador-grid"><div class="contador-sheet"><div class="contador-card-heading"><h3>Hoja de cálculo financiera</h3><button type="button" id="agregarAjusteReporte" class="contador-edit-button">+ Ajuste</button></div><div id="contadorTabla" class="contador-table-wrap"></div></div><div class="contador-chart-card"><div class="contador-card-heading"><button type="button" class="contador-chart-nav" id="contadorChartPrev" aria-label="Gráfico anterior">‹</button><h3 id="contadorChartTitle">Ventas vs. gastos</h3><button type="button" class="contador-chart-nav" id="contadorChartNext" aria-label="Gráfico siguiente">›</button></div><canvas id="contadorChart"></canvas><div id="contadorDistribucion" class="contador-distribucion"></div></div></div>
+        </section>
+
+
+        <!-- DATOS ADICIONALES -->
+
+        <section class="stats analysis-stats">
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Unidades vendidas</span>
+
+                    <span class="card-period">
+                        Total
+                    </span>
+                </div>
+
+                <strong id="unidadesVendidas">
+                    0
+                </strong>
+
+                <p>
+                    Productos vendidos
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Venta promedio</span>
+
+                    <span class="card-period">
+                        Promedio
+                    </span>
+                </div>
+
+                <strong id="ticketPromedio">
+                    $0
+                </strong>
+
+                <p>
+                    Promedio por venta
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Producto más vendido</span>
+
+                    <span class="card-period">
+                        Destacado
+                    </span>
+                </div>
+
+                <strong
+                    id="productoMasVendido"
+                    class="small-stat"
+                >
+                    —
+                </strong>
+
+                <p id="cantidadProductoTop">
+                    Sin ventas todavía
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+                    <span>Ventas de hoy</span>
+
+                    <span class="card-period">
+                        Hoy
+                    </span>
+                </div>
+
+                <strong id="ventasHoy">
+                    $0
+                </strong>
+
+                <p>
+                    Facturación del día
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- GRÁFICO -->
+
+        <section class="chart-section">
+
+
+            <div class="section-heading chart-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        RENDIMIENTO
+                    </span>
+
+                    <h2>
+                        Evolución del negocio
+                    </h2>
+
+                    <p id="periodoGrafico">
+                        Últimos 7 días
+                    </p>
+
+                </div>
+
+
+                <div class="chart-filters">
+
+                    <button
+                        class="filter-button active"
+                        data-period="7"
+                    >
+                        7 días
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-period="30"
+                    >
+                        30 días
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-period="month"
+                    >
+                        Mes actual
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-summary">
+
+
+                <div class="chart-summary-item">
+
+                    <span class="chart-dot sales-dot"></span>
+
+                    <div>
+
+                        <small>
+                            Ventas
+                        </small>
+
+                        <strong id="graficoVentasTotal">
+                            $0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-summary-item">
+
+                    <span class="chart-dot expense-dot"></span>
+
+                    <div>
+
+                        <small>
+                            Gastos
+                        </small>
+
+                        <strong id="graficoGastosTotal">
+                            $0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-summary-item">
+
+                    <span class="chart-dot result-dot"></span>
+
+                    <div>
+
+                        <small>
+                            Resultado
+                        </small>
+
+                        <strong id="graficoResultadoTotal">
+                            $0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="ventasChart"></canvas>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- COMPARACIÓN -->
+
+        <section class="comparison-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        COMPARACIÓN
+                    </span>
+
+                    <h2>
+                        Rendimiento del negocio
+                    </h2>
+
+                    <p>
+                        Compará tus ventas de los últimos
+                        7 días con los 7 días anteriores.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="comparison-grid">
+
+
+                <div class="comparison-card">
+
+                    <span>
+                        Últimos 7 días
+                    </span>
+
+                    <strong id="ventasPeriodoActual">
+                        $0
+                    </strong>
+
+                    <p>
+                        Ventas
+                    </p>
+
+                </div>
+
+
+                <div class="comparison-card">
+
+                    <span>
+                        7 días anteriores
+                    </span>
+
+                    <strong id="ventasPeriodoAnterior">
+                        $0
+                    </strong>
+
+                    <p>
+                        Ventas
+                    </p>
+
+                </div>
+
+
+                <div class="comparison-card comparison-result">
+
+                    <span>
+                        Variación
+                    </span>
+
+                    <strong id="variacionVentas">
+                        —
+                    </strong>
+
+                    <p id="textoVariacionVentas">
+                        Todavía no hay suficientes
+                        datos para comparar.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ANÁLISIS -->
+
+        <section class="insights">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ANÁLISIS
+                    </span>
+
+                    <h2>
+                        Análisis de tu negocio
+                    </h2>
+
+                    <p>
+                        LUiv analiza tus datos
+                        y encuentra oportunidades.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="insights-grid"
+                id="insightsContainer"
+            ></div>
+
+        </section>
+
+
+        <!-- NUEVA VENTA -->
+
+        <section class="sales-form">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        REGISTRO
+                    </span>
+
+                    <h2>
+                        Nueva venta
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="producto">
+                        Producto
+                    </label>
+
+                    <div class="autocomplete-wrapper">
+                        <input
+                            type="text"
+                            id="producto"
+                            placeholder="Ej. Remera"
+                            autocomplete="off"
+                        >
+                        <div id="sugerenciasProducto" class="autocomplete-dropdown"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="precio">
+                        Precio
+                    </label>
+
+                    <input
+                        type="text"
+                        id="precio"
+                        placeholder="Ej. 15000"
+                        inputmode="numeric"
+                        data-mascara-monto
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="cantidad">
+                        Cantidad
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cantidad"
+                        placeholder="Ej. 2"
+                        value="1"
+                    >
+
+                </div>
+
+
+                <div class="form-action form-action-scan">
+
+                    <button
+                        type="button"
+                        id="escanearVenta"
+                        class="scan-button"
+                        title="Escanear código de barras"
+                    >
+                        ⌕
+                    </button>
+
+                    <button id="agregarVenta">
+                        Agregar venta
+                    </button>
+
+                </div>
+
+
+            </div>
+
+            <div id="barcodeNotificacion" class="barcode-notification"></div>
+
+        </section>
+
+
+        <!-- VENTAS -->
+
+        <section class="sales-list">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ACTIVIDAD
+                    </span>
+
+                    <h2>
+                        Ventas recientes
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="sales-tools">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscarVenta"
+                        placeholder="Buscar producto..."
+                    >
+
+                </div>
+
+
+                <div class="sales-filter-buttons">
+
+                    <button
+                        class="sales-filter active"
+                        data-filter="all"
+                    >
+                        Todas
+                    </button>
+
+                    <button
+                        class="sales-filter"
+                        data-filter="today"
+                    >
+                        Hoy
+                    </button>
+
+                    <button
+                        class="sales-filter"
+                        data-filter="week"
+                    >
+                        Esta semana
+                    </button>
+
+                    <button
+                        class="sales-filter"
+                        data-filter="month"
+                    >
+                        Este mes
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="sales-result-info">
+
+                <span id="resultadoVentas">
+                    0 ventas registradas
+                </span>
+
+            </div>
+
+
+            <div class="sales-header">
+
+                <span>Producto</span>
+                <span>Cantidad</span>
+                <span>Precio</span>
+                <span>Total</span>
+                <span>Fecha</span>
+                <span></span>
+
+            </div>
+
+
+            <div id="listaVentas"></div>
+
+        </section>
+
+
+        <!-- PRODUCTOS -->
+
+        <section class="products-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        PRODUCTOS
+                    </span>
+
+                    <h2>
+                        Rendimiento de productos
+                    </h2>
+
+                    <p>
+                        Conocé cuáles son tus productos
+                        más importantes y cuánto generan.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="products-tools">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscarProducto"
+                        placeholder="Buscar producto..."
+                    >
+
+                </div>
+
+
+                <div class="product-sort-buttons">
+
+                    <button
+                        class="product-sort active"
+                        data-sort="units"
+                    >
+                        Más vendidos
+                    </button>
+
+                    <button
+                        class="product-sort"
+                        data-sort="revenue"
+                    >
+                        Mayor facturación
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="listaProductos"
+                class="products-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- GESTIÓN AVANZADA DE GASTOS -->
+
+        <!-- NUEVO GASTO -->
+
+        <section class="sales-form gastos-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        REGISTRO
+                    </span>
+
+                    <h2>
+                        Nuevo gasto
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="descripcionGasto">
+                        Descripción
+                    </label>
+
+                    <input
+                        type="text"
+                        id="descripcionGasto"
+                        placeholder="Ej. Mercadería"
+                    >
+
+                </div>
+
+                <div class="form-group">
+                    <label for="categoriaGasto">Categoría</label>
+                    <select id="categoriaGasto">
+                        <option>Mercadería / Stock</option>
+                        <option>Servicios (Luz, Agua, Internet)</option>
+                        <option>Alquiler</option>
+                        <option>Sueldos / Salarios</option>
+                        <option>Marketing / Publicidad</option>
+                        <option>Impuestos / Tasas</option>
+                        <option>Herramientas / Insumos</option>
+                        <option selected>Varios / Otros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaGasto">Fecha</label>
+                    <input type="date" id="fechaGasto">
+                </div>
+
+                <div class="form-group">
+                    <label for="notasGasto">Notas <small>(opcional)</small></label>
+                    <input type="text" id="notasGasto" placeholder="Proveedor, factura o comprobante">
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="montoGasto">
+                        Monto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="montoGasto"
+                        placeholder="Ej. 150000"
+                        inputmode="numeric"
+                        data-mascara-monto
+                    >
+
+                </div>
+
+
+                <div class="form-action">
+
+                    <button id="agregarGasto">
+                        Agregar gasto
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+        <section class="expense-kpis" aria-label="Indicadores de gastos">
+            <article class="expense-kpi"><span>Gastos del mes</span><strong id="totalGastosMes">$0</strong></article>
+            <article class="expense-kpi"><span>Categoría principal</span><strong id="categoriaTopGastos">—</strong></article>
+            <article class="expense-kpi"><span>Promedio diario</span><strong id="promedioGasto">$0</strong></article>
+            <article class="expense-kpi"><span>Mayor gasto</span><strong id="mayorGastoUnico">—</strong></article>
+        </section>
+
+
+        <!-- GASTOS -->
+
+        <section class="sales-list">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ACTIVIDAD
+                    </span>
+
+                    <h2>
+                        Gastos recientes
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="expense-tools">
+                <input type="text" id="buscarGasto" placeholder="Buscar por descripción, categoría o nota">
+                <div class="gasto-filters" aria-label="Filtrar gastos por período">
+                    <button class="gasto-filter active" type="button" data-filter-gasto="all">Todos</button>
+                    <button class="gasto-filter" type="button" data-filter-gasto="today">Hoy</button>
+                    <button class="gasto-filter" type="button" data-filter-gasto="week">Esta semana</button>
+                    <button class="gasto-filter" type="button" data-filter-gasto="month">Este mes</button>
+                </div>
+                <p id="resultadoGastos" class="expense-result" aria-live="polite"></p>
+            </div>
+
+            <div id="desgloseCategorias" class="expense-breakdown" aria-live="polite"></div>
+
+            <div id="insightsGastosContainer" class="expense-insights" aria-live="polite"></div>
+
+
+            <div class="sales-header gastos-header">
+
+                <span>Descripción</span>
+                <span>Categoría</span>
+                <span>Notas</span>
+                <span>Monto</span>
+                <span>Fecha</span>
+                <span></span>
+
+            </div>
+
+
+            <div id="listaGastos"></div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ========================================
+         MODO CAJA (POS)
+    ========================================= -->
+
+    <main class="content-caja" id="modoCajaSeccion" style="display: none;">
+        
+        <!-- ENCABEZADO MODO CAJA -->
+        <section class="welcome">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="eyebrow">PUNTO DE VENTA (POS)</span>
+                    <h1 style="font-size: 34px; margin: 0; line-height: 1.15; letter-spacing: -0.045em;">Modo Caja</h1>
+                    <p style="color: #8993a4; font-size: 14px; margin-top: 8px;">Registrá ventas de forma ágil, escaneando códigos de barras o buscando productos.</p>
+                </div>
+                <button type="button" class="topbar-button" onclick="toggleModoCaja()" style="margin-top: 10px;">
+                    Volver al Panel
+                </button>
+            </div>
+        </section>
+
+        <!-- GRID PRINCIPAL DE LA CAJA (2 columnas) -->
+        <div class="caja-grid">
+            
+            <!-- COLUMNA IZQUIERDA: CARRITO / VENTA ACTUAL -->
+            <div class="caja-card caja-left">
+                <div class="caja-card-header">
+                    <div class="caja-card-title">
+                        <span class="caja-icon">🛒</span>
+                        <h2>Venta Actual</h2>
+                    </div>
+                    <button type="button" class="caja-btn-clear" id="btnLimpiarCaja" onclick="limpiarCajaConConfirmacion()">
+                        Limpiar Venta
+                    </button>
+                </div>
+
+                <!-- Lista de productos en el carrito -->
+                <div class="caja-carrito-container" id="carritoCajaLista">
+                    <!-- Dinámico -->
+                    <div class="caja-carrito-vacio">
+                        <h3>Tu carrito de ventas está vacío</h3>
+                        <p>Buscá un producto en el buscador de la derecha o escaneá un código de barras para agregarlo.</p>
+                    </div>
+                </div>
+
+                <!-- Resumen y totalizador -->
+                <div class="caja-resumen-footer">
+                    <div class="caja-resumen-line">
+                        <span>Subtotal</span>
+                        <strong id="cajaSubtotal">$0</strong>
+                    </div>
+                    <div class="caja-resumen-line total">
+                        <span>Total a Pagar</span>
+                        <strong id="cajaTotal">$0</strong>
+                    </div>
+
+                    <!-- Calculadora de vuelto / recibo de efectivo -->
+                    <div class="caja-pago-helper">
+                        <div class="caja-pago-input-group">
+                            <label for="cajaEfectivoRecibido">Efectivo Recibido</label>
+                            <input type="text" id="cajaEfectivoRecibido" placeholder="Ej. 1000" inputmode="numeric" data-mascara-monto oninput="calcularVueltoCaja()">
+                        </div>
+                        <div class="caja-pago-vuelto-group">
+                            <span>Vuelto</span>
+                            <strong id="cajaVuelto">$0</strong>
+                        </div>
+                    </div>
+
+                    <!-- Acciones principales -->
+                    <button type="button" class="caja-btn-confirm" id="btnConfirmarVentaCaja" onclick="confirmarVentaCaja()">
+                        CONFIRMAR VENTA
+                    </button>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: BUSCADOR Y SELECCIÓN DE PRODUCTOS -->
+            <div class="caja-card caja-right">
+                <div class="caja-card-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                    <div class="caja-card-title">
+                        <span class="caja-icon">🔍</span>
+                        <h2>Buscar Producto</h2>
+                    </div>
+                    <p style="margin: 0; color: #707b8c; font-size: 13px;">Escribí el nombre del producto o el código de barras.</p>
+                </div>
+
+                <div class="caja-search-container">
+                    <div class="search-box" style="flex: 1;">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" id="buscadorCaja" placeholder="Escribí para buscar o escaneá..." oninput="filtrarProductosCaja()" autocomplete="off">
+                    </div>
+                    <!-- Botón para escanear con la cámara integrado directamente -->
+                    <button type="button" class="scan-button" id="btnEscanearCaja" onclick="abrirScannerVenta()" title="Escanear con cámara" style="height: 44px; width: 44px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #1b2635; border-radius: 9px; background: #0b1017; color: #7f8998; cursor: pointer; transition: all 0.2s ease;">
+                        📷
+                    </button>
+                </div>
+
+                <!-- Resultados de búsqueda -->
+                <div class="caja-productos-grid" id="productosCajaResultados">
+                    <!-- Dinámico -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js"></script>
+
+
+<div id="scannerVentaModal" class="scanner-modal">
+    <div class="scanner-box">
+        <div class="scanner-header">
+            <div>
+                <span class="eyebrow">LECTOR</span>
+                <h2>Escanear para nueva venta</h2>
+            </div>
+            <button type="button" id="cerrarScannerVenta" class="scanner-close" aria-label="Cerrar lector">×</button>
+        </div>
+        <div class="scanner-video-container">
+            <video id="scannerVentaVideo" autoplay muted playsinline></video>
+            <div class="scanner-frame">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="scanner-status">
+            <span id="scannerVentaStatus">Apuntá la cámara al código de barras.</span>
+        </div>
+        <div id="codigoVentaDetectado" class="codigo-detectado"></div>
+    </div>
+</div>
+
+<div id="ticketVentaModal" class="ticket-modal" aria-hidden="true">
+    <div class="ticket-box" role="dialog" aria-modal="true" aria-labelledby="ticketVentaTitulo">
+        <div id="ticketImprimible" class="ticket-printable"></div>
+        <div class="ticket-actions"><button type="button" class="secondary-button" id="imprimirTicketVenta">Imprimir ticket</button><button type="button" class="primary-button" id="cerrarTicketVenta">Cerrar / Nueva venta</button></div>
+    </div>
+</div>
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
