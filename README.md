@@ -3,43 +3,44 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=flat&logo=node.js&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat&logo=sqlite&logoColor=white)
-![Status](https://img.shields.io/badge/Status-En%20Desarrollo%20%2F%20Funcional-brightgreen)
+![Status](https://img.shields.io/badge/Status-Funcional%20%2F%20En%20Desarrollo-brightgreen)
 
 ## 📌 Descripción del Proyecto
-**LUiv** es una plataforma web integral de gestión comercial y analítica financiera diseñada para pequeñas y medianas empresas. La aplicación centraliza el flujo operativo de ventas en punto de venta (POS), el registro estructurado de gastos y la consolidación de métricas clave en un dashboard de control en tiempo real.
+**LUiv** es una plataforma web de gestión comercial y analítica financiera diseñada para centralizar la operación de pequeños y medianos negocios. Integra un módulo transaccional para punto de venta (POS), control exhaustivo de egresos y un **panel ejecutivo de control** que transforma datos brutos en métricas clave para la toma de decisiones.
 
-El objetivo principal es transformar datos transaccionales crudos en **visualizaciones ejecutivas** que faciliten la toma de decisiones sobre ingresos, liquidez y margen de rentabilidad.
+---
+
+## 🖼️ Interfaz y Módulos del Sistema
+
+| Resumen de Negocio y KPIs | Reporte Financiero y Gráficos |
+|:-:|:-:|
+| ![Resumen General](resumen_general.png) | ![Reporte Financiero](reporte_financiero.png) |
+
+| Análisis de Rendimiento e Insights | Registro y Historial de Ventas (POS) |
+|:-:|:-:|
+| ![Análisis de Rendimiento](analisis_rendimiento.png) | ![Historial de Ventas](historial_ventas.png) |
+
+| Gestión de Inventario y Productos |
+|:-:|
+| ![Gestión de Productos](gestion_productos.png) |
 
 ---
 
 ## ⚡ Funcionalidades Clave
 
-* 🛒 **Módulo Punto de Venta (POS):** Carga rápida de ventas, gestión de inventario/productos y cálculo automático de totales.
-* 💸 **Control de Gastos y Flujo de Caja:** Categorización de egresos operativos y seguimiento del balance neto.
-* 📊 **Dashboard Analytics & KPIs:**
-  * Evolución temporal de ingresos y egresos.
-  * Ticket promedio por transacción.
-  * Ranking de productos/servicios más vendidos.
-  * Indicadores de rentabilidad y margen operativo.
-* 🗄️ **Persistencia de Datos:** Arquitectura optimizada para almacenamiento transaccional eficiente.
+* 🛒 **Módulo Punto de Venta (POS):** Registro ágil de operaciones, emisión de comprobantes internos e historial detallado con buscadores.
+* 💸 **Gestión Financiera y Caja:** Control de egresos por categoría, monitoreo de flujo de efectivo y balance neto diario/semanal/mensual.
+* 📊 **Analytics e Insights Inteligentes:** Identificación automática de tendencias de ventas, productos más rentables y alertas de concentración de facturación.
+* 📦 **Control de Inventario:** Diagnóstico de stock disponible, productos agotados y métricas de rendimiento individual por artículo.
+* 💾 **Protección de Datos:** Sistema integrado para descargar y restaurar copias de seguridad locales.
 
 ---
 
 ## 🛠️ Stack Tecnológico
-* **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js / Recharts (Visualización interactiva)
+* **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js
 * **Backend:** Node.js / Express
-* **Base de Datos:** SQLite / JSON DB
-* **Herramientas de Desarrollo:** VS Code, Git & GitHub
-
----
-
-## 🖼️ Capturas de Pantalla
-
-| Vista Principal del Dashboard | Módulo de Ventas / Finanzas |
-|:-:|:-:|
-| ![Dashboard Principal](https://via.placeholder.com/500x300.png?text=LUiv+Dashboard+Overview) | ![Modulo POS](https://via.placeholder.com/500x300.png?text=Muestra+de+Ventas+y+Gastos) |
-
-*(Podés reemplazar estas imágenes subiendo capturas reales de la aplicación a la carpeta del proyecto)*
+* **Base de Datos:** SQLite / JSON Storage
+* **Herramientas:** Visual Studio Code, Git & GitHub
 
 ---
 
