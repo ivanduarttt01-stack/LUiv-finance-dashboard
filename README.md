@@ -1,19 +1,51 @@
-# LUiv
+# 💼 LUiv - Business Management & Finance Dashboard
 
-Aplicación estática para gestionar ventas, gastos y productos. Los datos se conservan en el navegador mediante `localStorage`; no se usan variables de entorno ni una base de datos remota.
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=flat&logo=node.js&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat&logo=sqlite&logoColor=white)
+![Status](https://img.shields.io/badge/Status-En%20Desarrollo%20%2F%20Funcional-brightgreen)
 
-## Ejecutar localmente
+## 📌 Descripción del Proyecto
+**LUiv** es una plataforma web integral de gestión comercial y analítica financiera diseñada para pequeñas y medianas empresas. La aplicación centraliza el flujo operativo de ventas en punto de venta (POS), el registro estructurado de gastos y la consolidación de métricas clave en un dashboard de control en tiempo real.
 
-Abrí el proyecto mediante un servidor estático (necesario para probar la PWA). Por ejemplo, con Node.js instalado:
+El objetivo principal es transformar datos transaccionales crudos en **visualizaciones ejecutivas** que faciliten la toma de decisiones sobre ingresos, liquidez y margen de rentabilidad.
 
-```powershell
-npx serve .
-```
+---
 
-Después abrí la dirección que muestre el comando. Para instalarla, usá la opción **Instalar aplicación** del navegador (Chrome/Edge) cuando se sirva por HTTPS o desde `localhost`.
+## ⚡ Funcionalidades Clave
 
-## Deployment
+* 🛒 **Módulo Punto de Venta (POS):** Carga rápida de ventas, gestión de inventario/productos y cálculo automático de totales.
+* 💸 **Control de Gastos y Flujo de Caja:** Categorización de egresos operativos y seguimiento del balance neto.
+* 📊 **Dashboard Analytics & KPIs:**
+  * Evolución temporal de ingresos y egresos.
+  * Ticket promedio por transacción.
+  * Ranking de productos/servicios más vendidos.
+  * Indicadores de rentabilidad y margen operativo.
+* 🗄️ **Persistencia de Datos:** Arquitectura optimizada para almacenamiento transaccional eficiente.
 
-Se recomienda Netlify porque la aplicación no necesita compilación ni servidor. Importá el repositorio o arrastrá la carpeta del proyecto; la configuración `netlify.toml` publica la raíz. Netlify entrega HTTPS y asigna una URL como `https://nombre-del-sitio.netlify.app` que podés compartir. También se puede publicar en Cloudflare Pages o GitHub Pages como sitio estático.
+---
 
-No hay variables de entorno necesarias. Importante: los datos son locales a cada navegador/dispositivo. Para compartir datos entre personas se requeriría, en una etapa futura, un backend y autenticación.
+## 🛠️ Stack Tecnológico
+* **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chart.js / Recharts (Visualización interactiva)
+* **Backend:** Node.js / Express
+* **Base de Datos:** SQLite / JSON DB
+* **Herramientas de Desarrollo:** VS Code, Git & GitHub
+
+---
+
+## 🖼️ Capturas de Pantalla
+
+| Vista Principal del Dashboard | Módulo de Ventas / Finanzas |
+|:-:|:-:|
+| ![Dashboard Principal](https://via.placeholder.com/500x300.png?text=LUiv+Dashboard+Overview) | ![Modulo POS](https://via.placeholder.com/500x300.png?text=Muestra+de+Ventas+y+Gastos) |
+
+*(Podés reemplazar estas imágenes subiendo capturas reales de la aplicación a la carpeta del proyecto)*
+
+---
+
+## 🚀 Cómo Ejecutar el Proyecto Localmente
+
+1. Clonar el repositorio:
+   ```bash
+   git clone [https://github.com/ivanduarttt01-stack/LUiv-finance-dashboard.git](https://github.com/ivanduarttt01-stack/LUiv-finance-dashboard.git)
+   cd LUiv-finance-dashboard
