@@ -12,6 +12,11 @@
 
     <title>LUiv — Productos</title>
 
+    <meta name="theme-color" content="#05070b">
+    <meta name="description" content="Catálogo de productos de LUiv.">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+
     <link
         rel="stylesheet"
         href="style.css"
@@ -24,6 +29,25 @@
 
 
 <div class="dashboard">
+
+    <aside class="app-sidebar" aria-label="Navegación principal">
+        <a class="sidebar-brand" href="dashboard.html" aria-label="LUiv, ir al resumen">
+            LU<span>iv</span>
+        </a>
+
+        <span class="sidebar-label">NEGOCIO</span>
+
+        <nav class="sidebar-nav">
+            <a class="sidebar-link" href="dashboard.html">Resumen</a>
+            <a class="sidebar-link active" href="productos.html">Productos</a>
+            <a class="sidebar-link" href="dashboard.html#modo-caja">Modo caja</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="sidebar-status"></span>
+            Datos guardados en este dispositivo
+        </div>
+    </aside>
 
 
     <!-- ========================================
@@ -2598,16 +2622,10 @@ async function abrirScanner() {
 
 
         codigoDetectado.innerHTML = `
-
-            <p>
-                No pudimos acceder a una cámara.
-            </p>
-
             <p>
                 Podés ingresar el código manualmente
                 o utilizar un lector de códigos USB.
             </p>
-
         `;
 
     }
@@ -2847,6 +2865,8 @@ mostrarCatalogo();
 
 
 </script>
+
+<script src="pwa.js"></script>
 
 
 </body>

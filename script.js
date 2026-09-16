@@ -2,11 +2,19 @@
 // DATOS
 // ========================================
 
-let ventasGuardadas =
-    JSON.parse(localStorage.getItem("ventas")) || [];
+function leerListaLocal(clave) {
+    try {
+        const datos = JSON.parse(localStorage.getItem(clave) || "[]");
+        return Array.isArray(datos) ? datos : [];
+    } catch (_) {
+        // Un dato local corrupto no debe impedir que el resto de la aplicación abra.
+        return [];
+    }
+}
 
-let gastosGuardados =
-    JSON.parse(localStorage.getItem("gastos")) || [];
+let ventasGuardadas = leerListaLocal("ventas");
+
+let gastosGuardados = leerListaLocal("gastos");
 
 const CATEGORIA_GASTO_POR_DEFECTO = "Varios / Otros";
 let filtroGastosActual = "all";
@@ -67,8 +75,7 @@ function normalizarGastosGuardados() {
 
 normalizarGastosGuardados();
 
-let productosGuardados =
-    JSON.parse(localStorage.getItem("productosLUiv")) || [];
+let productosGuardados = leerListaLocal("productosLUiv");
 
 let filtroVentasActual = "all";
 
@@ -406,7 +413,7 @@ function mostrarVentas() {
                 <div class="venta">
 
                     <strong>
-                        ${venta.producto || "Sin producto"}
+                        ${escaparHTML(venta.producto || "Sin producto")}
                     </strong>
 
                     <span>
@@ -428,7 +435,7 @@ function mostrarVentas() {
                     </span>
 
                     <span class="fecha-venta">
-                        ${venta.fecha || "Sin fecha"}
+                        ${escaparHTML(venta.fecha || "Sin fecha")}
                     </span>
 
                     <button
@@ -1105,6 +1112,17 @@ function agregarVenta() {
     productoSeleccionadoId = null;
 
     actualizarTodo();
+
+    mostrarNotificacion("success", "Venta registrada correctamente", resultado.venta.producto);
+
+    mostrarComprobante({
+        tipo: "venta",
+        numero: crearNumeroComprobante("V"),
+        fecha: new Date(),
+        items: [{ nombre: resultado.venta.producto, cantidad: resultado.venta.cantidad, precio: resultado.venta.precio }],
+        total: resultado.venta.total,
+        pago: "Pago registrado"
+    });
 
 }
 
@@ -1878,10 +1896,20 @@ function agregarGasto() {
     const descripcion = descripcionElemento.value.trim();
     const monto = numeroDesdeFormato(montoElemento.value);
     if (!descripcion || !Number.isFinite(monto) || monto <= 0) { alert("Ingresá una descripción y un importe mayor que cero."); return; }
-    gastosGuardados.push({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, descripcion, monto, fecha: fechaElemento?.value || fechaLocalISO(), categoria: categoriaElemento?.value || CATEGORIA_GASTO_POR_DEFECTO, notas: notasElemento?.value.trim() || "" });
+    const nuevoGasto = { id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, descripcion, monto, fecha: fechaElemento?.value || fechaLocalISO(), categoria: categoriaElemento?.value || CATEGORIA_GASTO_POR_DEFECTO, notas: notasElemento?.value.trim() || "" };
+    gastosGuardados.push(nuevoGasto);
     localStorage.setItem("gastos", JSON.stringify(gastosGuardados));
     descripcionElemento.value = ""; montoElemento.value = ""; if (notasElemento) notasElemento.value = ""; if (fechaElemento) fechaElemento.value = fechaLocalISO();
     actualizarTodo();
+    mostrarComprobante({
+        tipo: "compra",
+        numero: crearNumeroComprobante("C"),
+        fecha: fechaGastoAFecha(nuevoGasto.fecha) || new Date(),
+        items: [{ nombre: nuevoGasto.descripcion, cantidad: 1, precio: nuevoGasto.monto }],
+        total: nuevoGasto.monto,
+        categoria: nuevoGasto.categoria,
+        notas: nuevoGasto.notas
+    });
 }
 
 if (botonGasto) botonGasto.addEventListener("click", agregarGasto);
@@ -4731,6 +4759,9 @@ function toggleModoCaja() {
 
     if (modoCajaActivo) {
 
+        document.querySelectorAll(".sidebar-link").forEach(enlace => enlace.classList.remove("active"));
+        document.getElementById("sidebarModoCaja")?.classList.add("active");
+
         if (seccionNormal) {
             seccionNormal.style.display =
                 "none";
@@ -4771,6 +4802,9 @@ function toggleModoCaja() {
     }
 
     else {
+
+        document.querySelectorAll(".sidebar-link").forEach(enlace => enlace.classList.remove("active"));
+        document.getElementById("sidebarResumen")?.classList.add("active");
 
         // Si hay items sin confirmar, solo se descartan
         // (no se registran ventas ni se toca stock)
@@ -5628,7 +5662,7 @@ function confirmarVentaCaja() {
         document.getElementById("cajaEfectivoRecibido")?.value
     );
     const ticketVenta = {
-        numero: `LU-${Date.now().toString().slice(-8)}`,
+        numero: crearNumeroComprobante("V"),
         fecha: new Date(),
         items: carritoCaja.map(item => ({ ...item })),
         total: calcularTotalCarritoCaja(),
@@ -5649,12 +5683,7 @@ function confirmarVentaCaja() {
     }
 
     // Recargar productos desde localStorage por si cambió stock
-    productosGuardados =
-        JSON.parse(
-            localStorage.getItem(
-                "productosLUiv"
-            )
-        ) || productosGuardados;
+    productosGuardados = leerListaLocal("productosLUiv");
 
     renderizarCarritoCaja();
 
@@ -5670,7 +5699,7 @@ function confirmarVentaCaja() {
             : `${registradas} productos`
     );
 
-    mostrarTicketVenta(ticketVenta);
+    mostrarComprobante({ ...ticketVenta, tipo: "venta", pago: efectivoRecibido > 0 ? "Efectivo" : "Pago registrado" });
 
     const buscador =
         document.getElementById(
@@ -6006,13 +6035,24 @@ if (buscadorCajaEl) {
 let contadorPeriodoActual = "day";
 let contadorChart = null;
 let contadorVistaActual = 0;
-let ajustesReporteFinanciero = JSON.parse(localStorage.getItem("ajustesReporteFinanciero") || "[]");
+let ajustesReporteFinanciero = leerListaLocal("ajustesReporteFinanciero");
 
-function mostrarTicketVenta(ticket) {
+function crearNumeroComprobante(prefijo) {
+    return `${prefijo}-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${Date.now().toString().slice(-6)}`;
+}
+
+function mostrarComprobante(ticket) {
     const modal = document.getElementById("ticketVentaModal");
     const contenido = document.getElementById("ticketImprimible");
     if (!modal || !contenido) return;
-    contenido.innerHTML = `<div class="ticket-head"><h2 id="ticketVentaTitulo">LUiv</h2><div>Comprobante de venta</div><div class="ticket-meta">Ticket ${escaparHTML(ticket.numero)} · ${ticket.fecha.toLocaleString("es-AR")}</div></div>${ticket.items.map(item => `<div class="ticket-line"><div><strong>${escaparHTML(item.nombre)}</strong><small>${Number(item.cantidad)} × ${formatoDinero(item.precio)}</small></div><strong>${formatoDinero(Number(item.cantidad) * Number(item.precio))}</strong></div>`).join("")}<div class="ticket-line ticket-total"><span>Total abonado</span><strong>${formatoDinero(ticket.total)}</strong></div><div class="ticket-line"><span>Efectivo recibido</span><strong>${formatoDinero(ticket.efectivo)}</strong></div><div class="ticket-line"><span>Vuelto</span><strong>${formatoDinero(ticket.vuelto)}</strong></div>`;
+    const esCompra = ticket.tipo === "compra";
+    const fecha = ticket.fecha instanceof Date ? ticket.fecha : new Date(ticket.fecha);
+    const cantidadArticulos = ticket.items.reduce((total, item) => total + Number(item.cantidad || 0), 0);
+    const detalleCompra = esCompra ? `<div class="ticket-detail"><span>Categoría</span><strong>${escaparHTML(ticket.categoria || CATEGORIA_GASTO_POR_DEFECTO)}</strong></div>${ticket.notas ? `<div class="ticket-notes">${escaparHTML(ticket.notas)}</div>` : ""}` : "";
+    const detallePago = !esCompra ? `<div class="ticket-detail"><span>Forma de pago</span><strong>${escaparHTML(ticket.pago || "Pago registrado")}</strong></div>${Number(ticket.efectivo) > 0 ? `<div class="ticket-detail"><span>Recibido</span><strong>${formatoDinero(ticket.efectivo)}</strong></div><div class="ticket-detail"><span>Vuelto</span><strong>${formatoDinero(ticket.vuelto)}</strong></div>` : ""}` : "";
+    contenido.innerHTML = `<div class="ticket-head"><div class="ticket-brand">LUIV</div><h2 id="ticketVentaTitulo">${esCompra ? "COMPROBANTE DE COMPRA" : "COMPROBANTE DE VENTA"}</h2><div class="ticket-meta">N.º ${escaparHTML(ticket.numero)}<br>${Number.isNaN(fecha.getTime()) ? "Fecha no disponible" : fecha.toLocaleString("es-AR")}</div></div><div class="ticket-items">${ticket.items.map(item => `<div class="ticket-line"><div><strong>${escaparHTML(item.nombre)}</strong><small>${Number(item.cantidad)} × ${formatoDinero(item.precio)}</small></div><strong>${formatoDinero(Number(item.cantidad) * Number(item.precio))}</strong></div>`).join("")}</div><div class="ticket-summary"><div class="ticket-detail"><span>${cantidadArticulos} artículo${cantidadArticulos === 1 ? "" : "s"}</span><span>${esCompra ? "Compra registrada" : "Venta registrada"}</span></div>${detalleCompra}${detallePago}<div class="ticket-line ticket-total"><span>TOTAL</span><strong>${formatoDinero(ticket.total)}</strong></div></div><div class="ticket-footer">${esCompra ? "Comprobante interno de compra" : "¡Gracias por tu compra!"}<br><small>Documento generado por LUiv</small></div>`;
+    const botonCerrar = document.getElementById("cerrarTicketVenta");
+    if (botonCerrar) botonCerrar.textContent = esCompra ? "Cerrar" : "Cerrar / Nueva venta";
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
 }
@@ -6054,9 +6094,9 @@ function actualizarContadorAutomatico() {
     const productoTop = Object.entries(productosPeriodo).sort((a, b) => b[1] - a[1])[0];
     resumen.innerHTML = `<article class="contador-kpi"><span>Total de ventas</span><strong>${formatoDinero(totalVentas)}</strong><small>${ventas.length} operaciones</small></article><article class="contador-kpi"><span>Total de gastos</span><strong>${formatoDinero(totalGastos)}</strong><small>${Object.keys(gastosCategoria).length} categorías</small></article><article class="contador-kpi"><span>Resultado neto</span><strong>${formatoDinero(neto)}</strong><small>Margen ${margen.toFixed(1)}%</small></article><article class="contador-kpi"><span>Producto más vendido</span><strong>${escaparHTML(productoTop?.[0] || "—")}</strong><small>${productoTop ? `${productoTop[1]} unidades` : "Sin ventas"}</small></article>`;
     const filasGastos = Object.entries(gastosCategoria).sort((a, b) => b[1] - a[1]).map(([categoria, monto]) => `<tr><td>Gasto · ${escaparHTML(categoria)}</td><td>${formatoDinero(monto)}</td></tr>`).join("");
-    const filasStock = productosGuardados.filter(producto => producto.activo !== false).map(producto => { const vendidas = productosPeriodo[producto.nombre] || 0; const actual = Number(producto.stock || 0); return `<tr><td>${escaparHTML(producto.nombre)}</td><td>Inicio: ${actual + vendidas} · Vendidas: ${vendidas} · Actual: ${actual}</td></tr>`; }).join("");
+    const filasStock = productosGuardados.filter(producto => producto.activo !== false).map(producto => { const vendidas = productosPeriodo[producto.nombre] || 0; const actual = Number(producto.stock || 0); return `<tr class="contador-stock-row"><td>${escaparHTML(producto.nombre)}</td><td><span class="stock-detail">Inicial ${actual + vendidas}</span><span class="stock-detail">Vendidas ${vendidas}</span><span class="stock-detail">Actual ${actual}</span></td></tr>`; }).join("");
     const filasAjustes = ajustesPeriodo.map(ajuste => `<tr class="contador-adjustment"><td><select data-ajuste-tipo="${escaparHTML(ajuste.id)}"><option value="ingreso" ${ajuste.tipo === "ingreso" ? "selected" : ""}>Ajuste de ingreso</option><option value="gasto" ${ajuste.tipo === "gasto" ? "selected" : ""}>Ajuste de gasto</option></select><input class="contador-note-input" data-ajuste-nota="${escaparHTML(ajuste.id)}" value="${escaparHTML(ajuste.nota || "")}" placeholder="Nota opcional"></td><td><div class="contador-edit-value"><input inputmode="numeric" data-ajuste-valor="${escaparHTML(ajuste.id)}" value="${Number(ajuste.valor || 0).toLocaleString("es-AR")}"><button type="button" data-eliminar-ajuste="${escaparHTML(ajuste.id)}" aria-label="Eliminar ajuste">×</button></div></td></tr>`).join("");
-    tabla.innerHTML = `<table class="contador-table"><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody><tr><td>Ventas (${ventas.length} operaciones)</td><td>${formatoDinero(totalVentas)}</td></tr><tr><td>Gastos totales</td><td>${formatoDinero(totalGastos)}</td></tr><tr><td>Resultado neto</td><td>${formatoDinero(neto)} (${margen.toFixed(1)}%)</td></tr><tr><td>Mayor categoría de gasto</td><td>${escaparHTML(categoriaTop?.[0] || "—")} ${categoriaTop ? `· ${formatoDinero(categoriaTop[1])}` : ""}</td></tr>${filasGastos}${filasStock}${filasAjustes}</tbody></table>`;
+    tabla.innerHTML = `<table class="contador-table"><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody><tr class="contador-group-row"><td colspan="2">Resumen financiero</td></tr><tr><td>Ventas (${ventas.length} operaciones)</td><td>${formatoDinero(totalVentas)}</td></tr><tr><td>Gastos totales</td><td>${formatoDinero(totalGastos)}</td></tr><tr><td>Resultado neto</td><td>${formatoDinero(neto)} (${margen.toFixed(1)}%)</td></tr><tr><td>Mayor categoría de gasto</td><td>${escaparHTML(categoriaTop?.[0] || "—")} ${categoriaTop ? `· ${formatoDinero(categoriaTop[1])}` : ""}</td></tr>${filasGastos ? `<tr class="contador-group-row"><td colspan="2">Gastos por categoría</td></tr>${filasGastos}` : ""}${filasStock ? `<tr class="contador-group-row"><td colspan="2">Estado del inventario</td></tr>${filasStock}` : ""}${filasAjustes ? `<tr class="contador-group-row"><td colspan="2">Ajustes manuales</td></tr>${filasAjustes}` : ""}</tbody></table>`;
     tabla.querySelectorAll("[data-ajuste-valor], [data-ajuste-nota], [data-ajuste-tipo]").forEach(campo => campo.addEventListener("change", () => {
         const id = campo.dataset.ajusteValor || campo.dataset.ajusteNota || campo.dataset.ajusteTipo;
         const ajuste = ajustesReporteFinanciero.find(item => item.id === id);
@@ -6079,12 +6119,12 @@ function renderizarGraficoContador(datos) {
     contadorVistaActual = (contadorVistaActual + vistas.length) % vistas.length;
     if (titulo) titulo.textContent = vistas[contadorVistaActual];
     contadorChart?.destroy();
-    const base = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:"#cbd5e1", boxWidth:12 } } }, scales:{ x:{ ticks:{ color:"#94a3b8" }, grid:{ color:"#1b2635" } }, y:{ ticks:{ color:"#94a3b8" }, grid:{ color:"#1b2635" }, beginAtZero:true } } };
+    const base = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:"#465873", boxWidth:12, padding:16, font:{ weight:"600" } } } }, scales:{ x:{ ticks:{ color:"#607089" }, grid:{ color:"rgba(82, 105, 138, .12)" } }, y:{ ticks:{ color:"#607089" }, grid:{ color:"rgba(82, 105, 138, .12)" }, beginAtZero:true } } };
     let configuracion;
-    if (contadorVistaActual === 0) configuracion = { type:"doughnut", data:{ labels:["Ventas", "Gastos", "Resultado neto"], datasets:[{ data:[datos.totalVentas, datos.totalGastos, Math.max(0, datos.neto)], backgroundColor:["#2563eb", "#f59e0b", "#22c55e"], borderColor:"#131b26", borderWidth:3 }] }, options:base };
+    if (contadorVistaActual === 0) configuracion = { type:"doughnut", data:{ labels:["Ventas", "Gastos", "Resultado neto"], datasets:[{ data:[datos.totalVentas, datos.totalGastos, Math.max(0, datos.neto)], backgroundColor:["#3974ef", "#e9a23b", "#31aa6e"], borderColor:"#ffffff", borderWidth:4 }] }, options:base };
     if (contadorVistaActual === 1) { const tendencia = datos.ventas.reduce((mapa, venta) => { mapa[venta.fecha] = (mapa[venta.fecha] || 0) + Number(venta.total || 0); return mapa; }, {}); configuracion = { type:"line", data:{ labels:Object.keys(tendencia), datasets:[{ label:"Ventas", data:Object.values(tendencia), borderColor:"#2563eb", backgroundColor:"rgba(37,99,235,.18)", fill:true, tension:.35 }] }, options:base }; }
     if (contadorVistaActual === 2) { const productos = Object.entries(datos.productosPeriodo).sort((a,b) => b[1]-a[1]).slice(0,7); configuracion = { type:"bar", data:{ labels:productos.map(item => item[0]), datasets:[{ label:"Unidades", data:productos.map(item => item[1]), backgroundColor:"#60a5fa", borderRadius:6 }] }, options:base }; }
-    if (contadorVistaActual === 3) { const categorias = Object.entries(datos.gastosCategoria).sort((a,b) => b[1]-a[1]); configuracion = { type:"doughnut", data:{ labels:categorias.map(item => item[0]), datasets:[{ data:categorias.map(item => item[1]), backgroundColor:["#f59e0b", "#fb7185", "#a78bfa", "#38bdf8", "#4ade80", "#f97316"], borderColor:"#131b26", borderWidth:3 }] }, options:base }; }
+    if (contadorVistaActual === 3) { const categorias = Object.entries(datos.gastosCategoria).sort((a,b) => b[1]-a[1]); configuracion = { type:"doughnut", data:{ labels:categorias.map(item => item[0]), datasets:[{ data:categorias.map(item => item[1]), backgroundColor:["#e9a23b", "#df6680", "#8972d6", "#4699d9", "#31aa6e", "#e78443"], borderColor:"#ffffff", borderWidth:4 }] }, options:base }; }
     contadorChart = new Chart(canvas, configuracion);
     const texto = document.getElementById("contadorDistribucion");
     if (texto) texto.textContent = contadorVistaActual === 0 ? (datos.totalVentas ? `Los gastos consumen ${(datos.totalGastos / datos.totalVentas * 100).toFixed(1)}% de las ventas. Margen neto: ${datos.margen.toFixed(1)}%.` : "Registrá ventas para analizar el período.") : `Vista ${contadorVistaActual + 1} de ${vistas.length}. Usá las flechas para explorar los indicadores.`;
@@ -6102,9 +6142,60 @@ function exportarReporteContador() {
     const enlace = document.createElement("a"); enlace.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); enlace.download = `reporte-luiv-${contadorPeriodoActual}.csv`; enlace.click(); URL.revokeObjectURL(enlace.href);
 }
 
+// Copia de seguridad completa: protege ventas, inventario, gastos y ajustes.
+const CLAVES_RESPALDO_LUIV = ["ventas", "gastos", "productosLUiv", "ajustesReporteFinanciero"];
+
+function descargarRespaldoLuiv() {
+    const datos = Object.fromEntries(CLAVES_RESPALDO_LUIV.map(clave => [clave, leerListaLocal(clave)]));
+    const contenido = JSON.stringify({
+        aplicacion: "LUiv",
+        version: 1,
+        exportadoEn: new Date().toISOString(),
+        datos
+    }, null, 2);
+    const enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(new Blob([contenido], { type: "application/json" }));
+    enlace.download = `respaldo-luiv-${fechaLocalISO()}.json`;
+    enlace.click();
+    URL.revokeObjectURL(enlace.href);
+    const mensaje = document.getElementById("respaldoMensaje");
+    if (mensaje) mensaje.textContent = "Copia de seguridad descargada correctamente.";
+}
+
+function importarRespaldoLuiv(evento) {
+    const archivo = evento.target.files?.[0];
+    if (!archivo) return;
+    const mensaje = document.getElementById("respaldoMensaje");
+    const lector = new FileReader();
+    lector.onload = () => {
+        try {
+            const respaldo = JSON.parse(String(lector.result));
+            const datos = respaldo?.datos;
+            if (!datos || typeof datos !== "object" || !CLAVES_RESPALDO_LUIV.every(clave => Array.isArray(datos[clave]))) {
+                throw new Error("Formato no compatible");
+            }
+            if (!window.confirm("Esto reemplazará los datos actuales de este navegador. ¿Querés continuar?")) return;
+            CLAVES_RESPALDO_LUIV.forEach(clave => localStorage.setItem(clave, JSON.stringify(datos[clave])));
+            if (mensaje) mensaje.textContent = "Respaldo restaurado. Actualizando la aplicación…";
+            window.location.reload();
+        } catch (_) {
+            if (mensaje) mensaje.textContent = "No se pudo restaurar: seleccioná una copia de seguridad válida de LUiv.";
+        } finally {
+            evento.target.value = "";
+        }
+    };
+    lector.onerror = () => {
+        if (mensaje) mensaje.textContent = "No se pudo leer el archivo seleccionado.";
+        evento.target.value = "";
+    };
+    lector.readAsText(archivo);
+}
+
 activarMascarasMonetarias();
 document.querySelectorAll(".contador-filter").forEach(boton => boton.addEventListener("click", () => { contadorPeriodoActual = boton.dataset.contadorPeriod; document.querySelectorAll(".contador-filter").forEach(item => item.classList.toggle("active", item === boton)); actualizarContadorAutomatico(); }));
 document.getElementById("exportarReporteContador")?.addEventListener("click", exportarReporteContador);
+document.getElementById("descargarRespaldo")?.addEventListener("click", descargarRespaldoLuiv);
+document.getElementById("importarRespaldo")?.addEventListener("change", importarRespaldoLuiv);
 document.getElementById("agregarAjusteReporte")?.addEventListener("click", () => { ajustesReporteFinanciero.push({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, periodo:contadorPeriodoActual, tipo:"gasto", valor:0, nota:"" }); localStorage.setItem("ajustesReporteFinanciero", JSON.stringify(ajustesReporteFinanciero)); actualizarContadorAutomatico(); });
 document.getElementById("contadorChartPrev")?.addEventListener("click", () => { contadorVistaActual -= 1; actualizarContadorAutomatico(); });
 document.getElementById("contadorChartNext")?.addEventListener("click", () => { contadorVistaActual += 1; actualizarContadorAutomatico(); });
@@ -6113,3 +6204,8 @@ document.getElementById("imprimirTicketVenta")?.addEventListener("click", () => 
 document.getElementById("ticketVentaModal")?.addEventListener("click", evento => { if (evento.target.id === "ticketVentaModal") cerrarTicketVenta(); });
 
 actualizarTodo();
+
+// Acceso directo al punto de venta desde el enlace persistente del catálogo.
+if (window.location.hash === "#modo-caja" && !modoCajaActivo) {
+    toggleModoCaja();
+}

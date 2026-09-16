@@ -12,6 +12,11 @@
 
     <title>LUiv — Mi negocio</title>
 
+    <meta name="theme-color" content="#05070b">
+    <meta name="description" content="Panel de gestión de LUiv.">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+
     <link
         rel="stylesheet"
         href="style.css"
@@ -23,6 +28,25 @@
 <body>
 
 <div class="dashboard">
+
+    <aside class="app-sidebar" aria-label="Navegación principal">
+        <a class="sidebar-brand" href="dashboard.html" aria-label="LUiv, ir al resumen">
+            LU<span>iv</span>
+        </a>
+
+        <span class="sidebar-label">NEGOCIO</span>
+
+        <nav class="sidebar-nav">
+            <a class="sidebar-link active" id="sidebarResumen" href="dashboard.html">Resumen</a>
+            <a class="sidebar-link" href="productos.html">Productos</a>
+            <button type="button" class="sidebar-link" id="sidebarModoCaja" onclick="toggleModoCaja()">Modo caja</button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="sidebar-status"></span>
+            Datos guardados en este dispositivo
+        </div>
+    </aside>
 
 
     <!-- ========================================
@@ -89,6 +113,20 @@
                 para entender cómo está funcionando.
             </p>
 
+        </section>
+
+        <section class="backup-section" aria-labelledby="respaldoTitulo">
+            <div>
+                <span class="eyebrow">PROTECCIÓN DE DATOS</span>
+                <h2 id="respaldoTitulo">Copia de seguridad</h2>
+                <p>Guardá una copia de ventas, gastos, productos y ajustes. Podés restaurarla en este navegador cuando lo necesites.</p>
+            </div>
+            <div class="backup-actions">
+                <button type="button" class="secondary-button" id="descargarRespaldo">Descargar copia</button>
+                <label class="secondary-button backup-import-label" for="importarRespaldo">Restaurar copia</label>
+                <input id="importarRespaldo" type="file" accept="application/json,.json" hidden>
+            </div>
+            <p id="respaldoMensaje" class="backup-message" aria-live="polite"></p>
         </section>
 
 
@@ -519,23 +557,25 @@
 
         <!-- NUEVA VENTA -->
 
-        <section class="sales-form">
+        <section class="sales-form operations-entry sales-entry">
 
             <div class="section-heading">
 
                 <div>
 
                     <span class="eyebrow">
-                        REGISTRO
+                        VENTA RÁPIDA
                     </span>
 
                     <h2>
-                        Nueva venta
+                        Registrar venta
                     </h2>
 
                 </div>
 
             </div>
+
+            <p class="operations-description">Buscá un producto o ingresalo manualmente. El comprobante se genera al confirmar la operación.</p>
 
 
             <div class="form-grid">
@@ -620,19 +660,21 @@
 
         <!-- VENTAS -->
 
-        <section class="sales-list">
+        <section class="sales-list operations-history sales-history">
 
             <div class="section-heading">
 
                 <div>
 
                     <span class="eyebrow">
-                        ACTIVIDAD
+                        HISTORIAL DE VENTAS
                     </span>
 
                     <h2>
                         Ventas recientes
                     </h2>
+
+                    <p>Encontrá una operación por producto o filtrá por período.</p>
 
                 </div>
 
@@ -793,23 +835,25 @@
 
         <!-- NUEVO GASTO -->
 
-        <section class="sales-form gastos-section">
+        <section class="sales-form gastos-section operations-entry expense-entry">
 
             <div class="section-heading">
 
                 <div>
 
                     <span class="eyebrow">
-                        REGISTRO
+                        COMPRA O GASTO
                     </span>
 
                     <h2>
-                        Nuevo gasto
+                        Registrar compra o gasto
                     </h2>
 
                 </div>
 
             </div>
+
+            <p class="operations-description">Registrá el movimiento y conservá su comprobante interno para imprimirlo si lo necesitás.</p>
 
 
             <div class="form-grid">
@@ -894,19 +938,21 @@
 
         <!-- GASTOS -->
 
-        <section class="sales-list">
+        <section class="sales-list operations-history expense-history">
 
             <div class="section-heading">
 
                 <div>
 
                     <span class="eyebrow">
-                        ACTIVIDAD
+                        HISTORIAL DE GASTOS
                     </span>
 
                     <h2>
                         Gastos recientes
                     </h2>
+
+                    <p>Buscá por descripción, categoría o nota; usá los filtros para acotar el período.</p>
 
                 </div>
 
@@ -923,9 +969,10 @@
                 <p id="resultadoGastos" class="expense-result" aria-live="polite"></p>
             </div>
 
-            <div id="desgloseCategorias" class="expense-breakdown" aria-live="polite"></div>
-
-            <div id="insightsGastosContainer" class="expense-insights" aria-live="polite"></div>
+            <details class="expense-breakdown-details">
+                <summary>Ver distribución por categoría</summary>
+                <div id="desgloseCategorias" class="expense-breakdown" aria-live="polite"></div>
+            </details>
 
 
             <div class="sales-header gastos-header">
@@ -1026,7 +1073,6 @@
             <div class="caja-card caja-right">
                 <div class="caja-card-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
                     <div class="caja-card-title">
-                        <span class="caja-icon">🔍</span>
                         <h2>Buscar Producto</h2>
                     </div>
                     <p style="margin: 0; color: #707b8c; font-size: 13px;">Escribí el nombre del producto o el código de barras.</p>
@@ -1038,8 +1084,8 @@
                         <input type="text" id="buscadorCaja" placeholder="Escribí para buscar o escaneá..." oninput="filtrarProductosCaja()" autocomplete="off">
                     </div>
                     <!-- Botón para escanear con la cámara integrado directamente -->
-                    <button type="button" class="scan-button" id="btnEscanearCaja" onclick="abrirScannerVenta()" title="Escanear con cámara" style="height: 44px; width: 44px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #1b2635; border-radius: 9px; background: #0b1017; color: #7f8998; cursor: pointer; transition: all 0.2s ease;">
-                        📷
+                    <button type="button" class="scan-button" id="btnEscanearCaja" onclick="abrirScannerVenta()" title="Escanear con cámara">
+                        Escanear
                     </button>
                 </div>
 
@@ -1092,6 +1138,7 @@
 
 
 <script src="script.js"></script>
+<script src="pwa.js"></script>
 
 
 </body>
