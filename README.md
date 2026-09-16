@@ -14,15 +14,15 @@
 
 | Resumen de Negocio y KPIs | Reporte Financiero y Gráficos |
 |:-:|:-:|
-| ![Resumen General](resumen_general.png) | ![Reporte Financiero](reporte_financiero.png) |
+| ![Resumen General](30f9b132-d4bd-42d9-8e0f-e6f87f97dd8e.jpg) | ![Reporte Financiero](488465e1-199a-473b-817c-0cadf2b363eb.png) |
 
 | Análisis de Rendimiento e Insights | Registro y Historial de Ventas (POS) |
 |:-:|:-:|
-| ![Análisis de Rendimiento](analisis_rendimiento.png) | ![Historial de Ventas](historial_ventas.png) |
+| ![Análisis de Rendimiento](835aadd1-a4fe-4309-ad27-cfa35230e9b0.png) | ![Historial de Ventas](e0bf10a2-c433-49d7-83ff-363cf4374668.jpg) |
 
 | Gestión de Inventario y Productos |
 |:-:|
-| ![Gestión de Productos](gestion_productos.png) |
+| ![Gestión de Productos](f22924e4-33ef-42c1-88e0-483b6ae7c987.png) |
 
 ---
 
