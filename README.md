@@ -1,3 +1,6 @@
+
+
+
 # 💼 LUiv - Business Management & Finance Dashboard
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)
@@ -11,8 +14,7 @@
 ---
 
 ## 📹 Demostración del Sistema
-
-<!-- ARRASTRA Y SUELTA TU ARCHIVO .MP4 AQUÍ MISMO MIENTRAS EDITAS EL ARCHIVO EN GITHUB -->
+https://github.com/user-attachments/assets/fe197a56-cbe6-4e30-aa61-a072bb355c6f
 
 ---
 
